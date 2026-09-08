@@ -46,8 +46,6 @@ dependencies {
     implementation "com.github.ingsis-2026:formatter:${printscriptVersion}"
     implementation "com.github.ingsis-2026:linter:${printscriptVersion}"
 
-    // Reads the TCK's JSON formatter configuration in the adapter.
-    implementation "com.fasterxml.jackson.core:jackson-databind:2.15.2"
 
     testImplementation 'junit:junit:4.13.1'
 }
