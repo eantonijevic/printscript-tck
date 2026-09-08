@@ -10,15 +10,16 @@ import util.PrintCounter;
 import java.util.Objects;
 
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class InterpreterLargeFileTest {
 
     private static final String MESSAGE = "This is a text";
     private static final String LINE = "println(\"" + MESSAGE + "\");\n";
-    private static final int NUMBER_OF_LINES = 32 * 1024;
+    private static final int NUMBER_OF_LINES = 128 * 1024;
     private final PrintScriptInterpreter interpreter = new CustomImplementationFactory().interpreter();
 
     @Test
@@ -38,6 +39,8 @@ public class InterpreterLargeFileTest {
         final var inputStream = new MockInputStream(LINE, NUMBER_OF_LINES);
         interpreter.execute(inputStream, "1.0", printCollector, errorCollector, (ignored) -> "");
 
-        assertThat(errorCollector.getErrors(), is(singletonList("Java heap space")));
+        // The JVM may append detail to the reason, as in
+        // "Java heap space: failed reallocation of scalar replaced objects".
+        assertThat(errorCollector.getErrors(), hasItem(startsWith("Java heap space")));
     }
 }
