@@ -2,18 +2,29 @@ plugins {
     id 'java'
 }
 
+// Version of the PrintScript implementation to test.
+// Override with -PprintscriptVersion=1.0.0-SNAPSHOT to pull the snapshot from GitHub Packages.
+def printscriptVersion = project.findProperty("printscriptVersion") ?: "1.0.0"
+
+// GitHub Packages needs credentials even for public packages, so the repository is only
+// declared when they are available. Locally the artifacts come from mavenLocal
+// (./gradlew publishToMavenLocal in the Printscript2026 repo).
+def gprUser = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR") ?: System.getenv("USERNAME")
+def gprKey = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN") ?: System.getenv("TOKEN")
+
 repositories {
     mavenLocal()
     mavenCentral()
-// TODO: uncomment to be able to fetch packages in your own repository
-//    maven {
-//        name = "GitHubPackages"
-//        url = uri("https://maven.pkg.github.com/<your-username>/printscript")
-//        credentials {
-//            username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-//            password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
-//        }
-//    }
+    if (gprUser != null && gprKey != null) {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Ingsis-2026/Printscript2026")
+            credentials {
+                username = gprUser
+                password = gprKey
+            }
+        }
+    }
 }
 
 java {
@@ -28,6 +39,16 @@ test {
 }
 
 dependencies {
+    implementation "com.github.ingsis-2026:commons:${printscriptVersion}"
+    implementation "com.github.ingsis-2026:lexer:${printscriptVersion}"
+    implementation "com.github.ingsis-2026:parser:${printscriptVersion}"
+    implementation "com.github.ingsis-2026:interpreter:${printscriptVersion}"
+    implementation "com.github.ingsis-2026:formatter:${printscriptVersion}"
+    implementation "com.github.ingsis-2026:linter:${printscriptVersion}"
+
+    // Reads the TCK's JSON formatter configuration in the adapter.
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.15.2"
+
     testImplementation 'junit:junit:4.13.1'
 }
 
