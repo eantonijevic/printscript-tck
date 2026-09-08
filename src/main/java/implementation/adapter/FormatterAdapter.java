@@ -58,7 +58,7 @@ public class FormatterAdapter implements PrintScriptFormatter {
         rules.put("spaceBeforeColon", false);
         rules.put("spaceAfterColon", true);
         rules.put("spaceAroundEquals", true);
-        rules.put("lineBreakPrintln", 1);
+        rules.put("lineBreakPrintln", 0);
         rules.put("conditionalIndentation", 4);
 
         copyBoolean(tckRules, "enforce-spacing-before-colon-in-declaration", rules, "spaceBeforeColon");
