@@ -39,7 +39,18 @@ public class InterpreterAdapter implements PrintScriptInterpreter {
         } catch (Throwable throwable) {
             // Throwable, not Exception: the large-file test expects OutOfMemoryError to be
             // reported as an error rather than to escape.
-            handler.reportError(Pipeline.describe(throwable));
+            final String message = Pipeline.describe(throwable);
+            try {
+                handler.reportError(message);
+            } catch (OutOfMemoryError exhausted) {
+                // Reporting allocates, and once the heap is exhausted there can be nothing
+                // left to allocate from, so the handler throws in place of the error being
+                // reported. The pipeline died on the way into this block, and the attempt
+                // that just failed forces the collection that reclaims it, so the retry has
+                // room the first attempt did not.
+                System.gc();
+                handler.reportError(message);
+            }
         }
     }
 }
