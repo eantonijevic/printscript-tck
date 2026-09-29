@@ -3,8 +3,8 @@ plugins {
 }
 
 // Version of the PrintScript implementation to test.
-// Override with -PprintscriptVersion=1.0.0-SNAPSHOT to pull the snapshot from GitHub Packages.
-def printscriptVersion = project.findProperty("printscriptVersion") ?: "1.0.0"
+// Override with -PprintscriptVersion=1.0.1-SNAPSHOT to pull the snapshot from GitHub Packages.
+def printscriptVersion = project.findProperty("printscriptVersion") ?: "1.1.0"
 
 // GitHub Packages needs credentials even for public packages, so the repository is only
 // declared when they are available. Locally the artifacts come from mavenLocal
